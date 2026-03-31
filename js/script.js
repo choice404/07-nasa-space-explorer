@@ -203,7 +203,7 @@ function renderGallery(items) {
 
 // Fetch APOD data from NASA for the chosen date range
 async function fetchAPOD(startDate, endDate) {
-  const API_KEY = "__NASA_KEY__";
+  const API_KEY = "x26a3LbOjR7ycsaBEolbF3FPdsak2lnLE7oT64ap";
   const url =
     `https://api.nasa.gov/planetary/apod` +
     `?api_key=${API_KEY}&start_date=${startDate}&end_date=${endDate}`;
