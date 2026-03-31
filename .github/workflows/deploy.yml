@@ -16,13 +16,26 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Generate config.js from secret
+      - name: Inject NASA API key into script.js
+        env:
+          NASA_KEY: ${{ secrets.NASA_KEY }}
         run: |
-          echo "const CONFIG = { NASA_KEY: '${{ secrets.NASA_KEY }}' };" > config.js
+          python3 -c "
+          import os
+          key = os.environ['NASA_KEY']
+          with open('js/script.js', 'r') as f:
+              content = f.read()
+          content = content.replace('__NASA_KEY__', key)
+          with open('js/script.js', 'w') as f:
+              f.write(content)
+          "
+
+      - name: Verify injection worked
+        run: |
+          grep -q '__NASA_KEY__' js/script.js && echo "FAILED: placeholder still present" && exit 1 || echo "SUCCESS: key was injected"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
-          exclude_assets: ""
